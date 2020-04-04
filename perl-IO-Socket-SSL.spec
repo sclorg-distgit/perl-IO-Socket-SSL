@@ -4,7 +4,7 @@
 
 Name:		%{?scl_prefix}perl-IO-Socket-SSL
 Version:	2.066
-Release:	9%{?dist}
+Release:	10%{?dist}
 Summary:	Perl library for transparent SSL
 License:	(GPL+ or Artistic) and MPLv2.0
 URL:		https://metacpan.org/release/IO-Socket-SSL
@@ -20,11 +20,11 @@ BuildRequires:	coreutils
 BuildRequires:	make
 BuildRequires:	%{?scl_prefix}perl-generators
 BuildRequires:	%{?scl_prefix}perl-interpreter
+BuildRequires:	%{?scl_prefix}perl(Config)
 BuildRequires:	%{?scl_prefix}perl(ExtUtils::MakeMaker) >= 6.76
 # Module Runtime
 BuildRequires:	openssl-libs >= 0.9.8
 BuildRequires:	%{?scl_prefix}perl(Carp)
-BuildRequires:	%{?scl_prefix}perl(Config)
 BuildRequires:	%{?scl_prefix}perl(constant)
 BuildRequires:	%{?scl_prefix}perl(Errno)
 BuildRequires:	%{?scl_prefix}perl(Exporter)
@@ -91,6 +91,9 @@ mod_perl.
 # Add a test for PHA
 %patch2 -p1
 
+# Normalize a shebang
+%{?scl:scl enable %{scl} '}perl -MConfig -i -pe %{?scl:'"}'%{?scl:"'}s{^#!/usr/bin/perl}{$Config{startperl}}%{?scl:'"}'%{?scl:"'} example/*%{?scl:'}
+
 %build
 %{?scl:scl enable %{scl} '}NO_NETWORK_TESTING=1 perl Makefile.PL INSTALLDIRS=vendor NO_PACKLIST=1 NO_PERLLOCAL=1 && %{make_build}%{?scl:'}
 
@@ -119,6 +122,9 @@ mod_perl.
 %{_mandir}/man3/IO::Socket::SSL::PublicSuffix.3*
 
 %changelog
+* Thu Mar 26 2020 Petr Pisar <ppisar@redhat.com> - 2.066-10
+- Normalize a shebang (bug #1817383)
+
 * Thu Feb 13 2020 Petr Pisar <ppisar@redhat.com> - 2.066-9
 - Import to SCL
 
